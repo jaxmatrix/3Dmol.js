@@ -910,6 +910,7 @@ $3Dmol.ShaderLib = {
             "uniform mat4 textmat;",
             "uniform mat4 projinv;",
             "uniform mat4 projectionMatrix;",
+            "uniform mat4 textmap;",
 
             "uniform float step;",
             "uniform float subsamples;",
@@ -960,21 +961,16 @@ $3Dmol.ShaderLib = {
             "      } else if(seengood) {",
             "         break;",
             "      }",
-            "      if( pt.x < -0.01 || pt.x > 1.01 || pt.y < -0.01 || pt.y > 1.01 || pt.z < -0.01 || pt.z > 1.01  ){",
-            "          color.a = 0.0;",
-            "          continue;",
-            "      }",
-            "      else {",
-            "         float val = texture(data, pt.zyx).r;",
-            "         if(isinf(val)) continue;", //masked out
-            "         float cval = (val-transfermin)/(transfermax-transfermin);", //scale to texture 0-1 range
-            "         vec4 val_color = texture(colormap, vec2(cval,0.5));",
-            "         color.rgb = color.rgb*color.a + (1.0-color.a)*val_color.a*val_color.rgb;",
-            "         color.a += (1.0 - color.a) * val_color.a; ",
-            "         if(color.a > 0.0) color.rgb /= color.a;",
-            // "         color = vec4(pt.x, pt.y, pt.z, 1.0);",
-            "      }",
-            // "      color = vec4(pt.x, pt.y, pt.z, 0.0)",
+            // Adding texture mapping so that basis vectors are followed
+            "      vec4 mappedCoords = textmap*pt;",
+            "      mappedCoords /= mappedCoords.w;",
+            "      float val = texture(data, mappedCoords.zyx).r;",
+            "      if(isinf(val)) continue;", //masked out
+            "      float cval = (val-transfermin)/(transfermax-transfermin);", //scale to texture 0-1 range
+            "      vec4 val_color = texture(colormap, vec2(cval,0.5));",
+            "      color.rgb = color.rgb*color.a + (1.0-color.a)*val_color.a*val_color.rgb;",
+            "      color.a += (1.0 - color.a) * val_color.a; ",
+            "      if(color.a > 0.0) color.rgb /= color.a;",
             "    }",
             "}"
 
@@ -1007,6 +1003,7 @@ $3Dmol.ShaderLib = {
             maxdepth: {type: 'f',value: 100.0}, //how far to step along ray before stopping
             subsamples: { type: 'f', value: 5.0}, //how many substeps to take
             textmat: { type: 'mat4', value: []},
+            textmap: { type: 'mat4', value: []}, // texture map matrix: tmm
             projinv: { type: 'mat4', value: []},
             transfermin: {type: 'f', value: -0.2 },
             transfermax: {type: 'f', value: 0.2},

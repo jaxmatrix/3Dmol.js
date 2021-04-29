@@ -209,7 +209,6 @@ $3Dmol.Renderer = function(parameters) {
 	      //my iphone crashes if we do though, so as a hacky workaround, don't do it with retina displays
         if(_antialias && this.devicePixelRatio < 2.0) this.devicePixelRatio *= 2.0;
 
-
         if(this.rows != undefined && this.cols != undefined && this.row != undefined && this.col != undefined){
             var wid = width/this.cols;
             var hei = height/this.rows;
@@ -816,6 +815,8 @@ $3Dmol.Renderer = function(parameters) {
                 _gl.uniformMatrix4fv(p_uniforms.textmat, false, _textureMatrix.elements);
                 _gl.uniformMatrix4fv(p_uniforms.projinv, false, _projInverse.elements);
 
+                _gl.uniformMatrix4fv(p_uniforms.textmap, false, object.material.textmap.elements);
+                
                 //  need the resolution (step size of ray in viewer coordinates)
                 let invscale = Math.min(Math.min(_direction.x,_direction.y),_direction.z);
                 m_uniforms.step.value = object.material.unit*invscale;

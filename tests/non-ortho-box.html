@@ -29,16 +29,6 @@
         // });
         var callback = function() {};
 
-        $.get('test_structs/info_box.cube', function(data){
-          viewer.addModel(data, "cube");
-          viewer.setStyle({}, {stick:{}});
-          viewer.addUnitCell();
-          var voldata = new $3Dmol.VolumeData(data, "cube");
-          viewer.addIsosurface(voldata, {isoval: 0.05, color: "blue", alpha: 0.95, smoothness: 10});
-          // viewer.rotate(90);
-          viewer.zoomTo();
-          viewer.render(callback);
-        }, 'text');
 
         // $.get('test_structs/h-bn.cube', function(data){
         $.get('test_structs/info_box.cube', function(data){
@@ -46,9 +36,11 @@
           var voldata = new $3Dmol.VolumeData(data, "cube");
           if(viewer.hasVolumetricRender()) {
             viewer.addVolumetricRender(voldata, {transferfn: [
-                                                              {color: "blue", opacity: 0.01, value: 0.01},
-                                                              {color: "blue", opacity: .5, value: 0.1},
-
+                                                              {color: "blue", opacity: .075, value: 0.1},
+                                                              {color: "blue", opacity: .001, value: 0.01},
+                                                              {color: "white", opacity: 0, value: 0},
+                                                              {color: "red", opacity: .001, value: -0.01},
+                                                              {color: "red", opacity: .075, value: -0.1}
                                                             ]
                                                 }
                                        );
